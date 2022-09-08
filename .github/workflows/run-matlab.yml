@@ -1,0 +1,17 @@
+name: Run MATLAB
+on: [push]
+jobs:
+  read_data_RTI-execute:
+    name: Run read_data_RTI Test Cases
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check Out Repository
+        uses: actions/checkout@v2
+      - name: Set Up MATLAB
+        uses: matlab-actions/setup-matlab@v1
+      - name: Run Tests and Generate Artifacts
+        uses: matlab-actions/run-tests@v1
+        with:
+
+          test-results-junit: tests-results/results.xml
+          code-coverage-cobertur: code-coverage/coverage.xml
