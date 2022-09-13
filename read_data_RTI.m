@@ -22,7 +22,7 @@ minRg = 20;
 %   Column 2: sync square wave from function generator
 % FS contains the sample frequency of the recording software
 %   Typically 44100 samples/sec
-[Y,FS] = audioread('01-Chapa_Hand-09-06-22.wav');
+[Y,FS] = audioread('/Collections/01-Chapa_Hand-09-06-22.wav');
 
 %constants
 c = 3E8; %(m/s) speed of light
