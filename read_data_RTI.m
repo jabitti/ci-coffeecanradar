@@ -81,6 +81,7 @@ for collection = collectionsfiles
 
     %RTI plot
     fig10 = figure(10);
+    fig10.Renderer = 'Painters'; % this ensures that your figure will be vector/ps
     v = dbv(ifft(sif,zpad,2));
     S = v(:,1:size(v,2)/2);
     m = max(max(v));
@@ -91,10 +92,11 @@ for collection = collectionsfiles
     xlabel('range (m)');
     title('RTI without clutter rejection');
     figpath = strcat("./CollectionResults/"+collection.name(1:2)+"-OG"+collection.name(3:end-4));
-    print(figpath,'-dpng','-r300') % or change this to 600 (dpi) for crispier figs
+    print(figpath,'-dpng','-r600') % or change this to 600 (dpi) for crispier figs
 
     %2 pulse cancelor RTI plot
     fig20 = figure(20);
+    fig20.Renderer = 'Painters'; % this ensures that your figure will be vector/ps
     sif2 = sif(2:size(sif,1),:)-sif(1:size(sif,1)-1,:);
     v = ifft(sif2,zpad,2);
     S=v;
@@ -110,7 +112,7 @@ for collection = collectionsfiles
     xlabel('range (m)');
     title('RTI with 2-pulse cancelor clutter rejection');
     figpath = strcat("./CollectionResults/"+collection.name(1:2)+"-PC"+collection.name(3:end-4));
-    print(figpath,'-dpng','-r300') % or change this to 600 (dpi) for crispier figs
+    print(figpath,'-dpng','-r600') % or change this to 600 (dpi) for crispier figs
 
     % figure(25);
     % plotminR = 20; % meters
