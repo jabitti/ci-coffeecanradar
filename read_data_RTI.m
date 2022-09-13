@@ -77,7 +77,7 @@ zpad = 8*N/2;
 R = linspace(0,max_range,zpad/2);
 
 %RTI plot
-figure(10);
+fig10 = figure(10);
 v = dbv(ifft(sif,zpad,2));
 S = v(:,1:size(v,2)/2);
 m = max(max(v));
@@ -87,6 +87,8 @@ colorbar;
 ylabel('time (s)');
 xlabel('range (m)');
 title('RTI without clutter rejection');
+figpath = strcat('figure_10');
+print(figpath,'-dpng','-r300') % or change this to 600 (dpi) for crispier figs
 
 %2 pulse cancelor RTI plot
 figure(20);
