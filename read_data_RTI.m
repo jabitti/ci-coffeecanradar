@@ -38,6 +38,7 @@ f = linspace(fstart, fstop, N/2); %instantaneous transmit frequency
 
 %range resolution
 rr = c/(2*BW);
+fprintf("\n%0.3f rr\n",rr);
 % max_range
 max_range = rr*N/2;
 
