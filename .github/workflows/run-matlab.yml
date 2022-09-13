@@ -13,3 +13,7 @@ jobs:
         uses: matlab-actions/run-command@v1
         with:
           command: read_data_RTI
+      - uses: actions/upload-artifact@v3
+        with:
+          name: CollectionResults
+          path: ./CollectionResults/
