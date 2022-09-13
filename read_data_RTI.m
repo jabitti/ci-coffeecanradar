@@ -68,7 +68,7 @@ end
 
 %subtract the average
 ave = mean(sif,1);
-for ii = 1:size(sif,1);
+for ii = 1:size(sif,1)
     sif(ii,:) = sif(ii,:) - ave;
 end
 
