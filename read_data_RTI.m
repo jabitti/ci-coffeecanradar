@@ -18,14 +18,16 @@ minRg = 20;
 
 collectionsfiles = dir('./Collections/*.wav');
 
-for collection = collectionsfiles
+for i = 1:height(collectionsfiles)
+    close all;
     %read the raw data .wav file here
     % Y contains an N x 2 matrix with the following:
     %   Column 1: radar return IF signal
     %   Column 2: sync square wave from function generator
     % FS contains the sample frequency of the recording software
     %   Typically 44100 samples/sec
-    [Y,FS] = audioread(append("./Collections/"+collection.name));
+    strcat("./Collections/",collectionsfiles(i).name)
+    [Y,FS] = audioread(strcat("./Collections/",collectionsfiles(i).name));
 
     %constants
     c = 3E8; %(m/s) speed of light
@@ -91,8 +93,9 @@ for collection = collectionsfiles
     ylabel('time (s)');
     xlabel('range (m)');
     title('RTI without clutter rejection');
-    figpath = strcat("./CollectionResults/"+collection.name(1:2)+"-OG"+collection.name(3:end-4));
-    print(figpath,'-dpng','-r600') % or change this to 600 (dpi) for crispier figs
+    figpath = strcat("./CollectionResults/"+collectionsfiles(i).name(1:2)+ ...
+        "-OG"+collectionsfiles(i).name(3:end-4));
+    %%%print(figpath,'-dpng','-r600') % or change this to 600 (dpi) for crispier figs
 
     %2 pulse cancelor RTI plot
     fig20 = figure(20);
@@ -111,8 +114,19 @@ for collection = collectionsfiles
     ylabel('time (s)');
     xlabel('range (m)');
     title('RTI with 2-pulse cancelor clutter rejection');
-    figpath = strcat("./CollectionResults/"+collection.name(1:2)+"-PC"+collection.name(3:end-4));
-    print(figpath,'-dpng','-r600') % or change this to 600 (dpi) for crispier figs
+    figpath = strcat("./CollectionResults/"+collectionsfiles(i).name(1:2)+...
+        "-PC"+collectionsfiles(i).name(3:end-4));
+    %%%print(figpath,'-dpng','-r600') % or change this to 600 (dpi) for crispier figs
+    
+    %%% Isolate Main Target
+    % S is the 3D graph of the return signal
+    figure(); mesh(S); title("OG Signal");
+    % Plot the transpose of S (gives max of each row)
+    figure(); plot(max(S')); title("Max of Rows");
+    % Subtract max of each row from all values in that row, but -1 to keep
+    % max value
+    ...
+    
 
     % figure(25);
     % plotminR = 20; % meters
@@ -124,7 +138,7 @@ for collection = collectionsfiles
     % ylabel('time (s)');
     % xlabel('range (m)');
     % title('Zoomed RTI with 2-pulse cancelor clutter rejection');
-    close all;
+    i = i + 1;
 end
 
 %% Plot single time slice
