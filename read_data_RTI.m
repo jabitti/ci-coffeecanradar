@@ -125,7 +125,12 @@ for i = 1:height(collectionsfiles)
     figure(); plot(max(S')); title("Max of Rows");
     % Subtract max of each row from all values in that row, but -1 to keep
     % max value
-    ...
+    % S(1,:) will give all Z values (:) for that time (1)
+    tolerance = 0;
+    rowMax = (S' == (max(S') + max(S')*tolerance))';
+    figure(); imagesc(R,time,rowMax);
+    figure(); mesh(rowMax);
+       figure(); plot(R,rowMax==1,'r*');
     
 
     % figure(25);
