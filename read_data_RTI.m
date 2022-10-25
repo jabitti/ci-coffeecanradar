@@ -19,7 +19,7 @@ minRg = 20;
 collectionsfiles = dir('./Collections/*.wav');
 
 for i = 1:height(collectionsfiles)
-    close all;
+    %close all;
     %read the raw data .wav file here
     % Y contains an N x 2 matrix with the following:
     %   Column 1: radar return IF signal
@@ -46,7 +46,7 @@ for i = 1:height(collectionsfiles)
     fprintf("\n%0.3f rr\n",rr);
     % max_range
     max_range = rr*N/2;
-
+    
     % Create separate vectors for the IF signal and the sync signal
     trig = Y(:,2);
     s = Y(:,1);
@@ -126,8 +126,8 @@ for i = 1:height(collectionsfiles)
     % Subtract max of each row from all values in that row, but -1 to keep
     % max value
     % S(1,:) will give all Z values (:) for that time (1)
-    tolerance = 0;
-    rowMax = (S' == (max(S') + max(S')*tolerance))';
+    tolerance = 0.01;
+    rowMax = (S' >= (max(S') + max(S')*tolerance))';
     figure(); imagesc(R,time,rowMax);
     figure(); mesh(rowMax);
        figure(); plot(R,rowMax==1,'r*');
