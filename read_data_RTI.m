@@ -26,7 +26,7 @@ for i = 1:height(collectionsfiles)
     %   Column 2: sync square wave from function generator
     % FS contains the sample frequency of the recording software
     %   Typically 44100 samples/sec
-    strcat("./Collections/",collectionsfiles(i).name)
+    strcat("./Collections/",collectionsfiles(i).name);
     [Y,FS] = audioread(strcat("./Collections/",collectionsfiles(i).name));
 
     %constants
@@ -43,7 +43,7 @@ for i = 1:height(collectionsfiles)
 
     %range resolution
     rr = c/(2*BW);
-    fprintf("\n%0.3f rr\n",rr);
+    %fprintf("\n%0.3f rr\n",rr);
     % max_range
     max_range = rr*N/2;
     
