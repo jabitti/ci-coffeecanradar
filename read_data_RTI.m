@@ -11,6 +11,7 @@
 
 clear all;
 close all;
+clc;
 
 rangeMovie = 'no';
 dBthresh = -55;
@@ -18,7 +19,8 @@ minRg = 20;
 
 collectionsfiles = dir('./Collections/*.wav');
 
-for i = 1:height(collectionsfiles)
+%for i = 1:height(collectionsfiles)
+for i = 3
     close all;
     %read the raw data .wav file here
     % Y contains an N x 2 matrix with the following:
@@ -33,6 +35,7 @@ for i = 1:height(collectionsfiles)
     c = 3E8; %(m/s) speed of light
 
     %radar parameters
+    %%%%% ===== Time Between Vertical Steps
     Tp = 20E-3; %(s) pulse time
     N = Tp*FS; %# of samples per pulse
     fstart = 2225.8E6; %(Hz) LFM start frequency from performance pred. spreadsheet
@@ -44,6 +47,7 @@ for i = 1:height(collectionsfiles)
     %range resolution
     rr = c/(2*BW);
     %fprintf("\n%0.3f rr\n",rr);
+    %%%%% ===== MAX RANGE
     % max_range
     max_range = rr*N/2;
     
@@ -118,23 +122,60 @@ for i = 1:height(collectionsfiles)
         "-PC"+collectionsfiles(i).name(3:end-4));
     %%%print(figpath,'-dpng','-r600') % or change this to 600 (dpi) for crispier figs
     
+%% Hough Transform
     %%% Isolate Main Target
     % S is the 3D graph of the return signal
-    figure(); mesh(S); title("OG Signal");
+    %figure(); mesh(S); title("OG Signal");
     % Plot the transpose of S (gives max of each row)
-    figure(); plot(max(S')); title("Max of Rows");
-    % Subtract max of each row from all values in that row, but -1 to keep
-    % max value
-    % S(1,:) will give all Z values (:) for that time (1)
-    tolerance = 0;
-    rowMax = (S' >= (max(S') + max(S')*tolerance))';
-    %figure(); imagesc(R,time,rowMax);
-    %figure(); mesh(rowMax);
-       %figure(); plot(R,rowMax==1,'r*');
-    [transform,theta] = hough(rowMax);
-    figure(); imagesc(transform);
-    figure(); mesh(transform);
+    %figure(); plot(max(S')); title("Max of Rows");
     
+%     Smn = mean(S2);
+%     S2norm = S2-Smn;
+%     threshold = 20;
+%     figure;mesh(S2norm);
+%     S2bin = (S2norm > threshold) .* ones(size(S2norm));
+%     figure(); imagesc(S2bin);
+    
+    [rows,cols] = size(S2);
+    transform = hough(S2);
+    [maxRows, iRows] = max(transform);
+    [maxColumns, deg] = max(maxRows);
+    [rhoMax, ~] = size(transform);
+    rho = iRows(deg) - (rhoMax-1)/2.0;
+        transform(iRows(deg+90),deg+90) = -50;
+    deg = deg - 90;
+    m = -1/tand(deg);
+    for i = 1:rows
+        j = m*i + rho/sind(deg);
+        if j < 1
+            j = 1;
+        end
+        S2(i,round(j)) = -10;
+    end
+    
+    % Attempt to Extract Another?
+%     [maxRows, iRows] = max(transform);
+%     [maxColumns, deg] = max(maxRows);
+%     rho = iRows(deg) - (rhoMax-1)/2.0;
+%         transform(iRows(deg+90),deg+90) = -50;
+%     deg = deg - 90;
+%     m = -1/tand(deg);
+%     for i = 1:rows
+%         j = m*i + rho/sind(deg);
+%         if j < 1
+%             j = 1;
+%         end
+%         S(i,round(j)) = -10;
+%     end
+    figure(); mesh(transform);
+    figure(); imagesc(S2);
+    
+    
+%% Velocity Calculation
+
+    velocity = ( (m*rows)-(m*0 + rho/sind(deg)) ) / ( rows*Tp );
+    fprintf('Velocity: %0.4f m/s\n',velocity);
+    fprintf('Velocity: %0.4f mph\n\n',velocity/2.23694);
 
     % figure(25);
     % plotminR = 20; % meters
