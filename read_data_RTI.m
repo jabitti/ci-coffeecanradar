@@ -136,6 +136,12 @@ for i = 3
 %     S2bin = (S2norm > threshold) .* ones(size(S2norm));
 %     figure(); imagesc(S2bin);
     
+    % Thresholding Out Noise
+    S2 = S2-min(min(S2));
+    S2 = (S2>=90).*100;
+    S2(:,200:end) = [];
+    figure(); mesh(S2);
+
     [rows,cols] = size(S2);
     transform = hough(S2);
     [maxRows, iRows] = max(transform);
@@ -150,8 +156,10 @@ for i = 3
         if j < 1
             j = 1;
         end
-        S2(i,round(j)) = -10;
+        S2(i,round(j)) = 150;
     end
+    
+    figure(); mesh(S2);
     
     % Attempt to Extract Another?
 %     [maxRows, iRows] = max(transform);
