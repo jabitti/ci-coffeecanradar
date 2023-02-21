@@ -20,7 +20,7 @@ minRg = 20;
 collectionsfiles = dir('./Collections/*.wav');
 
 %for i = 1:height(collectionsfiles)
-for i = 4
+for i = 2
     close all;
     %read the raw data .wav file here
     % Y contains an N x 2 matrix with the following:
@@ -136,22 +136,30 @@ for i = 4
 %     S2bin = (S2norm > threshold) .* ones(size(S2norm));
 %     figure(); imagesc(S2bin);
     
+    % Thresholding Out Noise
+    S2 = S2-min(min(S2));
+    S2 = (S2>=90).*100;
+    S2(:,200:end) = [];
+    figure(); mesh(S2);
+
     [rows,cols] = size(S2);
     transform = hough(S2);
     [maxRows, iRows] = max(transform);
     [maxColumns, deg] = max(maxRows);
     [rhoMax, ~] = size(transform);
     rho = iRows(deg) - (rhoMax-1)/2.0;
-        transform(iRows(deg+90),deg+90) = -50;
+%     transform(iRows(deg+90),deg+90) = -50;
+%     rho = maxRHO;
     deg = deg - 90;
     m = -1/tand(deg);
-    for i = 1:rows
-        j = m*i + rho/sind(deg);
-        if j < 1
-            j = 1;
+    for j = 1:cols
+        i = m*j + rho/sind(deg);
+        if i >= 1 & i<=rows
+            S2(round(i),j) = 500;
         end
-        S2(i,round(j)) = -10;
     end
+    
+    figure(); mesh(S2);
     
     % Attempt to Extract Another?
 %     [maxRows, iRows] = max(transform);
